@@ -56,7 +56,7 @@ The event storming diagram provides a high-level visualization of the events, co
 
 This video demonstrates the functional flow of the services, showing how they interact with each other and how the events flow between services.
 
-[Watch the video](assets/functional-video.mp4)
+[Watch the video]([functional record .mp4](https://github.com/mohamedabotir/Po-Project/blob/main/functional%20record%20.mp4))
 
 ## Docker Setup
 
@@ -64,10 +64,27 @@ This system is containerized using Docker. Kafka, Zookeeper, and SQL Server are 
 
 ### Prerequisites:
 - Docker (ensure Docker Desktop is running)
-- Docker Compose (for orchestrating containers)
 
 ### Running the Services Locally:
 1. Clone the repository.
 2. Navigate to the root directory and use Docker Compose to start the services:
    ```bash
-   docker-compose up
+3. ////// mongo db
+# Create a volume for data persistence
+docker volume create mongodb_data
+
+# Run the MongoDB container
+docker run -d --name mongodb -p 27017:27017 \
+  -v mongodb_data:/data/db \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=password \
+  mongo
+
+-- connection 
+mongodb://admin:password@localhost:27017
+
+# Kafka
+
+sudo docker exec -it <kafka-container-id> /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1
+# Sql Server
+sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -p 1433:1433 --user root --cap-add=SYS_PTRACE --name erpsql -d mcr.microsoft.com/mssql/server:2022-latest
