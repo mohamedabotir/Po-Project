@@ -27,22 +27,22 @@ This repository contains a set of services organized around an event-driven arch
 
 The system consists of the following microservices:
 
-### 1. **Purchase Order Service**
-   - **Repository:** [PurchaseOrder Service](https://github.com/mohamedabotir/POContext)
+### 1. **Purchase Order Service** 
+   - **Repository:** [PurchaseOrder Service](https://github.com/mohamedabotir/POContext) please read also markdown of project repo 
    - **Description:** This service handles purchase order requests and is responsible for publishing various events such as `Order Created`, `Order Approved`, `Order Begun Shipped`, `Order Shipped`, and `Order Closed`.
    - **Key Responsibilities:**
      - Handle and process incoming purchase order requests.
      - Publish events to Kafka for other services to react to.
    
 ### 2. **Shipping Order Service**
-   - **Repository:** [Shipping Order Service](https://github.com/mohamedabotir/Shipping)
+   - **Repository:** [Shipping Order Service](https://github.com/mohamedabotir/Shipping) please read also markdown of project repo 
    - **Description:** This service is responsible for shipping orders. It listens for the `Order Approved` event and consumes it to create a shipping order. It then publishes events like `Order Being Shipped` and `Order Shipped`.
    - **Key Responsibilities:**
      - Consume `Order Approved` event to initiate the shipping process.
      - Publish `Order Being Shipped` and `Order Shipped` events for further processing by other services.
 
 ### 3. **Inventory Service**
-   - **Repository:** [Inventory Service](https://github.com/mohamedabotir/InventoryContext)
+   - **Repository:** [Inventory Service](https://github.com/mohamedabotir/InventoryContext) please read also markdown of project repo
    - **Description:** This service manages inventory items and stock levels. It listens for the `Order Shipped` event and updates stock levels, as well as producing `Order Closed` events once the order has been completed.
    - **Key Responsibilities:**
      - Manage item creation and stock.
