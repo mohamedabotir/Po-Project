@@ -73,11 +73,10 @@ This system is containerized using Docker. Kafka, Zookeeper, and SQL Server are 
 ### Running the Services Locally:
 1. Clone the repository.
 then install below services 
-
-# Create a volume for data persistence
-docker volume create mongodb_data
+ 
 
 # Run the MongoDB container
+   ```bash
 docker run -d --name mongodb -p 27017:27017 \
   -v mongodb_data:/data/db \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
@@ -86,14 +85,15 @@ docker run -d --name mongodb -p 27017:27017 \
 
 -- connection 
 mongodb://admin:password@localhost:27017
-
+```
 # Kafka
-
+ ```bash
 sudo docker run -d --name env-zookeeper-1 \
   -p 2181:2181 \
   -e ZOOKEEPER_CLIENT_PORT=2181 \
   -e ZOOKEEPER_TICK_TIME=2000 \
   wurstmeister/zookeeper:3.4.6
+
 --- 
 docker run -d --name env-kafka-1 \
   -p 9093:9093 \
@@ -104,13 +104,15 @@ docker run -d --name env-kafka-1 \
   -e KAFKA_ZOOKEEPER_CONNECT=env-zookeeper-1:2181 \
   -e KAFKA_LISTENER_PORT=9093 \
   wurstmeister/kafka:latest
-
+```
 # Sql Server
+ ```bash
 sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -p 1433:1433 --user root --cap-add=SYS_PTRACE --name erpsql -d mcr.microsoft.com/mssql/server:2022-latest
-
+```
 # Start Services 
+ ```bash
 sudo docker container stop erpsql mongodb env-zookeeper-1 env-kafka-1
-
+```
 # then build database projects 
 will create databses 
 
