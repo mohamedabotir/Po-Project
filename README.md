@@ -16,8 +16,13 @@ This repository contains a set of services organized around an event-driven arch
 - **Architecture Patterns:**
   - Domain-Driven Design (DDD)
   - Railway-Oriented Programming (ROP)
-  - Event Sourcing and CQRS
-
+  - Event Handlers
+  - MediatR
+- **Used Tools and Environment**
+   - Rider
+   - vs code for databas project and as mongo studio and as  sql server studio
+   - Linux Os
+   - Miro to create eventStorm
 ## Services Overview
 
 The system consists of the following microservices:
@@ -85,6 +90,30 @@ mongodb://admin:password@localhost:27017
 
 # Kafka
 
-sudo docker exec -it <kafka-container-id> /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1
+sudo docker run -d --name env-zookeeper-1 \
+  -p 2181:2181 \
+  -e ZOOKEEPER_CLIENT_PORT=2181 \
+  -e ZOOKEEPER_TICK_TIME=2000 \
+  wurstmeister/zookeeper:3.4.6
+--- 
+docker run -d --name env-kafka-1 \
+  -p 9093:9093 \
+  -e KAFKA_ADVERTISED_LISTENER=PLAINTEXT://localhost:9093 \
+  -e KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT \
+  -e KAFKA_LISTENER_NAME=PLAINTEXT \
+  -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093 \
+  -e KAFKA_ZOOKEEPER_CONNECT=env-zookeeper-1:2181 \
+  -e KAFKA_LISTENER_PORT=9093 \
+  wurstmeister/kafka:latest
+
 # Sql Server
 sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -p 1433:1433 --user root --cap-add=SYS_PTRACE --name erpsql -d mcr.microsoft.com/mssql/server:2022-latest
+
+# Start Services 
+sudo docker container stop erpsql mongodb env-zookeeper-1 env-kafka-1
+
+# then build database projects 
+will create databses 
+
+
+
