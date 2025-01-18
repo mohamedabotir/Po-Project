@@ -72,9 +72,8 @@ This system is containerized using Docker. Kafka, Zookeeper, and SQL Server are 
 
 ### Running the Services Locally:
 1. Clone the repository.
-2. Navigate to the root directory and use Docker Compose to start the services:
-   ```bash
-3. ////// mongo db
+then install below services 
+
 # Create a volume for data persistence
 docker volume create mongodb_data
 
