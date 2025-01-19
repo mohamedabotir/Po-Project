@@ -75,46 +75,21 @@ This system is containerized using Docker. Kafka, Zookeeper, and SQL Server are 
 then install below services 
  
 
-# Run the MongoDB container
+# Run the Docker Compose
    ```bash
-docker run -d --name mongodb -p 27017:27017 \
-  -v mongodb_data:/data/db \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=password \
-  mongo
-
--- connection 
-mongodb://admin:password@localhost:27017
-```
-# Kafka
- ```bash
-sudo docker run -d --name env-zookeeper-1 \
-  -p 2181:2181 \
-  -e ZOOKEEPER_CLIENT_PORT=2181 \
-  -e ZOOKEEPER_TICK_TIME=2000 \
-  wurstmeister/zookeeper:3.4.6
-
---- 
-docker run -d --name env-kafka-1 \
-  -p 9093:9093 \
-  -e KAFKA_ADVERTISED_LISTENER=PLAINTEXT://localhost:9093 \
-  -e KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT \
-  -e KAFKA_LISTENER_NAME=PLAINTEXT \
-  -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093 \
-  -e KAFKA_ZOOKEEPER_CONNECT=env-zookeeper-1:2181 \
-  -e KAFKA_LISTENER_PORT=9093 \
-  wurstmeister/kafka:latest
-```
-# Sql Server
- ```bash
-sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -p 1433:1433 --user root --cap-add=SYS_PTRACE --name erpsql -d mcr.microsoft.com/mssql/server:2022-latest
-```
-# Start Services 
- ```bash
-sudo docker container stop erpsql mongodb env-zookeeper-1 env-kafka-1
+docker-compose up -d
 ```
 # then build database projects 
 will create databses 
+# then start ruuning services (replace your api on applicationSettings.json,open port(not safe) or use sql server within the same network 'adapter')
+```bash 
+sudo docker build -t pocontext:latest <pocontext root path>
+sudo docker run -d -p 8080:8080 --name pocontext-container --network kafka-network pocontext:latest
+sudo ufw allow 1433/tcp 
+sudo ufw allow 9092/tcp
+sudo ufw allow 27017/tcp
+sudo ufw allow 2181/tcp
 
+```
 
 
