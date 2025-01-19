@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    hostname: zookeeper  # Define hostname
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-network
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    hostname: kafka  # Define hostname
+    ports:
+      - "9092:9092"  # External port for Kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092  # External and internal listeners
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092  # Listeners for internal and external
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE  # Internal communication between brokers
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # Zookeeper connect string
+      KAFKA_CREATE_TOPICS: "my-topic:1:1"  # Automatically create a topic
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - kafka-network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    hostname: mongo  # Define hostname
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - kafka-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    hostname: sqlserver  # Define hostname
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "P@ssw0rd"
+      ACCEPT_EULA: "Y"
+    networks:
+      - kafka-network
+
+networks:
+  kafka-network:
+    driver: bridge
+
