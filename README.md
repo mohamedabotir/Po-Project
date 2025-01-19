@@ -81,15 +81,6 @@ docker-compose up -d
 ```
 # then build database projects 
 will create databses 
-# then start ruuning services (replace your api on applicationSettings.json,open port(not safe) or use sql server within the same network 'adapter')
-```bash 
-sudo docker build -t pocontext:latest <pocontext root path>
-sudo docker run -d -p 8080:8080 --name pocontext-container --network kafka-network pocontext:latest
-sudo ufw allow 1433/tcp 
-sudo ufw allow 9092/tcp
-sudo ufw allow 27017/tcp
-sudo ufw allow 2181/tcp
-
-```
+# then start ruuning services 
 
 
