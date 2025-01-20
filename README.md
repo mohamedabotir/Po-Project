@@ -23,6 +23,8 @@ This repository contains a set of services organized around an event-driven arch
    - vs code for databas project and as mongo studio and as  sql server studio
    - Linux Os
    - Miro to create eventStorm
+## How To Run 
+[Instructions 📼](https://drive.google.com/file/d/1-Fo6ZjfcHf7Jf7ZA1SQdB6TxdkAs_7lG/view?usp=sharing)
 ## Services Overview
 
 The system consists of the following microservices:
