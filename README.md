@@ -80,7 +80,7 @@ then install below services
 docker-compose up -d
 ```
 # then build database projects 
-will create databses 
-# then start ruuning services 
+will create databses (like on mentioned on video)
+# then use services
 
 
