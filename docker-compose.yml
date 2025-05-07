@@ -30,6 +30,38 @@ services:
     depends_on:
       - zookeeper
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - kafka-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - kafka-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.18
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - kafka-network
+    depends_on:
+      - elasticsearch
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -73,12 +105,15 @@ services:
       - MongoConfig__CollectionName=PurchaseOrder
       - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
       - Topic__TopicName=purchaseOrder
+      - ElkLog__ConnectionString=http://elasticsearch:9200
+      - Redis__Connection=redis:6379
     depends_on:
       - kafka
       - sqlserver
+      - redis
+      - elasticsearch
     networks:
       - kafka-network
-
 
   webapi2:
     build: /home/threading/DistributedSystem Assisment/Shipping
@@ -102,12 +137,13 @@ services:
       - TopicShippingOrders__TopicName=shippingOrder
       - Topic__TopicName=purchaseOrder
       - PurchaseOrderGraphQLEndpoint__EndPoint=http://pocontext:8080/graphql
+      - ElkLog__ConnectionString=http://elasticsearch:9200
     depends_on:
       - kafka
       - sqlserver
+      - elasticsearch
     networks:
       - kafka-network
-
 
   webapi3:
     build: /home/threading/DistributedSystem Assisment/InventoryContext
@@ -129,13 +165,14 @@ services:
       - MongoConfig__CollectionName=InventoryTransaction
       - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
       - Topic__TopicName=inventoryTrack
+      - ElkLog__ConnectionString=http://elasticsearch:9200
     depends_on:
       - kafka
       - sqlserver
+      - elasticsearch
     networks:
       - kafka-network
 
 networks:
   kafka-network:
     driver: bridge
-
