@@ -173,6 +173,69 @@ services:
     networks:
       - kafka-network
 
+  po-outbox-job:
+    build:
+      context: .
+      dockerfile: OutboxProcessorJob/Dockerfile
+    container_name: po-outbox-job
+    hostname: po-outbox
+    depends_on:
+      - kafka
+      - mongo
+      - redis
+      - elasticsearch
+    environment:
+      - MongoConfig__DatabaseName=ERPEventStore
+      - MongoConfig__CollectionName=PurchaseOrder
+      - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
+      - Topic__TopicName=purchaseOrder
+      - ProducerConfig__BootstrapServers=kafka:9093
+      - ElkLog__ConnectionString=http://elasticsearch:9200
+    networks:
+      - kafka-network
+
+  inventory-outbox-job:
+    build:
+      context: .
+      dockerfile: InventoryContext/OutboxProcessor/Dockerfile
+    container_name: inventory-outbox-job
+    hostname: inventory-outbox
+    depends_on:
+      - kafka
+      - mongo
+      - redis
+      - elasticsearch
+    environment:
+      - MongoConfig__DatabaseName=ERPEventStore
+      - MongoConfig__CollectionName=InventoryTransaction
+      - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
+      - Topic__TopicName=inventoryTrack
+      - ProducerConfig__BootstrapServers=kafka:9093
+      - ElkLog__ConnectionString=http://elasticsearch:9200
+    networks:
+      - kafka-network
+
+  shipping-outbox-job:
+    build:
+      context: .
+      dockerfile: Shipping/OutboxProcessor/Dockerfile
+    container_name: shipping-outbox-job
+    hostname: shipping-outbox
+    depends_on:
+      - kafka
+      - mongo
+      - redis
+      - elasticsearch
+    environment:
+      - MongoConfig__DatabaseName=ERPEventStore
+      - MongoConfig__CollectionName=ShippingOrder
+      - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
+      - Topic__TopicName=shippingOrder
+      - ProducerConfig__BootstrapServers=kafka:9093
+      - ElkLog__ConnectionString=http://elasticsearch:9200
+    networks:
+      - kafka-network
+
 networks:
   kafka-network:
     driver: bridge
