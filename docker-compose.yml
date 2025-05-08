@@ -87,7 +87,7 @@ services:
       - kafka-network
 
   webapi:
-    build: /home/threading/DistributedSystem Assisment/POContext
+    build: D:\career\ds\POContext
     container_name: pocontext-container
     hostname: pocontext
     ports:
@@ -116,7 +116,7 @@ services:
       - kafka-network
 
   webapi2:
-    build: /home/threading/DistributedSystem Assisment/Shipping
+    build: D:\career\ds\Shipping
     container_name: shipping-container
     hostname: shipping
     ports:
@@ -146,7 +146,7 @@ services:
       - kafka-network
 
   webapi3:
-    build: /home/threading/DistributedSystem Assisment/InventoryContext
+    build: D:\career\ds\InventoryContext
     container_name: inventory-container
     hostname: inventory
     ports:
@@ -175,8 +175,8 @@ services:
 
   po-outbox-job:
     build:
-      context: .
-      dockerfile: OutboxProcessorJob/Dockerfile
+      context: POContext
+      dockerfile: OutboxProcessorJob\Dockerfile
     container_name: po-outbox-job
     hostname: po-outbox
     depends_on:
@@ -185,19 +185,21 @@ services:
       - redis
       - elasticsearch
     environment:
+      - ConnectionStrings__PurchaseOrderDB=Server=sqlserver,1433;Database=PurchaseOrders;User Id=sa;Password=P@ssw0rd;Encrypt=False;TrustServerCertificate=True;
       - MongoConfig__DatabaseName=ERPEventStore
       - MongoConfig__CollectionName=PurchaseOrder
       - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
       - Topic__TopicName=purchaseOrder
       - ProducerConfig__BootstrapServers=kafka:9093
       - ElkLog__ConnectionString=http://elasticsearch:9200
+
     networks:
       - kafka-network
 
   inventory-outbox-job:
     build:
-      context: .
-      dockerfile: InventoryContext/OutboxProcessor/Dockerfile
+      context: InventoryContext
+      dockerfile: OutboxProcessor\Dockerfile
     container_name: inventory-outbox-job
     hostname: inventory-outbox
     depends_on:
@@ -206,6 +208,7 @@ services:
       - redis
       - elasticsearch
     environment:
+      - ConnectionStrings__Inventory=Server=sqlserver,1433;Database=InventoryDb;User Id=sa;Password=P@ssw0rd;Encrypt=False;TrustServerCertificate=True;
       - MongoConfig__DatabaseName=ERPEventStore
       - MongoConfig__CollectionName=InventoryTransaction
       - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
@@ -217,8 +220,8 @@ services:
 
   shipping-outbox-job:
     build:
-      context: .
-      dockerfile: Shipping/OutboxProcessor/Dockerfile
+      context: Shipping
+      dockerfile: OutboxProcessor/Dockerfile
     container_name: shipping-outbox-job
     hostname: shipping-outbox
     depends_on:
@@ -227,6 +230,7 @@ services:
       - redis
       - elasticsearch
     environment:
+      - ConnectionStrings__ShippingOrder=Server=sqlserver,1433;Database=ShippingOrder;User Id=sa;Password=P@ssw0rd;Encrypt=False;TrustServerCertificate=True;
       - MongoConfig__DatabaseName=ERPEventStore
       - MongoConfig__CollectionName=ShippingOrder
       - MongoConfig__ConnectionString=mongodb://admin:password@mongo:27017
